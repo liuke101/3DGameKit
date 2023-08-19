@@ -8,6 +8,7 @@ using UnityEngine.Events;
 public class DamageMessage
 {
     public int damage; //伤害
+    public Vector3 damagePosition; //伤害来源
 }
 
 [Serializable]
@@ -18,7 +19,7 @@ public class DamageEvent : UnityEvent<Damageable,DamageMessage>
 
 public class Damageable : MonoBehaviour
 {
-    #region 字段
+    #region 字段j
     public int maxHp; //最大血量
     public int currentHp; //当前血量
     
@@ -29,6 +30,7 @@ public class Damageable : MonoBehaviour
     public DamageEvent onHurt;
     public DamageEvent onDead;
     public DamageEvent onReset;
+    public DamageEvent onInvicibleTimeOut;
     #endregion
 
 
@@ -47,6 +49,7 @@ public class Damageable : MonoBehaviour
             {
                 m_isInvinible = false;
                 m_invincibleTimer = 0;
+                onInvicibleTimeOut?.Invoke(this,null);
             }
         }
             

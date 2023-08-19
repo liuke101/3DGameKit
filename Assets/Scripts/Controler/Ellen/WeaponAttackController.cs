@@ -48,7 +48,9 @@ public class WeaponAttackController : MonoBehaviour
         m_isAttack = false;
         m_attackList.Clear();
     }
+    
 
+    //检测敌人
     public void CheckGameObject()
     {
         if (!m_isAttack)
@@ -79,6 +81,7 @@ public class WeaponAttackController : MonoBehaviour
         //进行攻击
         DamageMessage message = new DamageMessage();
         message.damage = damage;
+        message.damagePosition = mySelf.transform.position;
         damageable.OnDamage(message);
         m_attackList.Add(obj);
     }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data.Common;
 using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -9,7 +10,6 @@ using Random = UnityEngine.Random;
 public class PlayerController : MonoBehaviour
 {
     #region 字段
-
     public CharacterController characterController;
     public Transform mainCamera;
 
@@ -33,7 +33,6 @@ public class PlayerController : MonoBehaviour
     private AnimatorStateInfo m_nextStateInfo;
     private int m_quickTurnLeftHash = Animator.StringToHash("Ellen_QuickTurnLeft");
     private int m_quickTurnRightHash = Animator.StringToHash("Ellen_QuickTurnRight");
-
     #endregion
 
     #region 生命周期函数
@@ -178,6 +177,17 @@ public class PlayerController : MonoBehaviour
     {
         weapon.SetActive(false);
     }
+    
+    public void OnHurt(Damageable damageable,DamageMessage message)
+    {
+        //计算受击方向
+        Vector3 direction = message.damagePosition - transform.position;
+        direction.y = 0;
+        Vector3 localDirection = transform.InverseTransformDirection(direction); //转换为局部坐标
+        m_animator.SetFloat("HurtX",localDirection.x);
+        m_animator.SetFloat("HurtY",localDirection.z);
+        m_animator.SetTrigger("Hurt");
+    }
     #endregion
 
     #region 动画事件
@@ -194,13 +204,11 @@ public class PlayerController : MonoBehaviour
     public void MeleeAttackStart()
     {
         weapon.GetComponent<WeaponAttackController>().BeginAttack();
-        //m_animator.SetTrigger("MeleeAttackStart");
     }
     
     public void MeleeAttackEnd()
     {
         weapon.GetComponent<WeaponAttackController>().EndAttack();
-        //m_animator.SetTrigger("MeleeAttackEnd");
     }
     #endregion
 }
