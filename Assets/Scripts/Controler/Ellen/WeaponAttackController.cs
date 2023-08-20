@@ -22,6 +22,7 @@ public class WeaponAttackController : MonoBehaviour
     public int damage;
     public GameObject mySelf;
     private List<GameObject> m_attackList = new List<GameObject>();
+    public GameObject hitPrefab;
     #endregion
 
 
@@ -62,13 +63,19 @@ public class WeaponAttackController : MonoBehaviour
                 m_results, 0, layerMask.value);
             for (int j = 0; j < count; j++)
             {
-                CheckDamage(m_results[j].transform.gameObject);
+                if (CheckDamage(m_results[j].transform.gameObject))
+                {
+                    if (hitPrefab != null)
+                    {
+                        Instantiate(hitPrefab, checkPoint[i].point.position, Quaternion.identity);
+                    }
+                }
             }
         }
     }
 
     //对敌人造成伤害
-    public void CheckDamage(GameObject obj)
+    public bool CheckDamage(GameObject obj)
     {
         //判断游戏物体是不是有受伤的功能
         Damageable damageable = obj.GetComponent<Damageable>();
@@ -76,7 +83,7 @@ public class WeaponAttackController : MonoBehaviour
         //以下情况不进行攻击
         //对象如果没有受伤功能|检测到自己|已经攻击过的对象|
         if (damageable==null || obj == mySelf || m_attackList.Contains(obj))
-            return;
+            return false;
 
         //进行攻击
         DamageMessage message = new DamageMessage();
@@ -84,6 +91,7 @@ public class WeaponAttackController : MonoBehaviour
         message.damagePosition = mySelf.transform.position;
         damageable.OnDamage(message);
         m_attackList.Add(obj);
+        return true;
     }
 
     private void OnDrawGizmosSelected()

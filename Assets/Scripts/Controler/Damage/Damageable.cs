@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Gamekit3D;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Serialization;
 
 public class DamageMessage
 {
@@ -19,7 +20,7 @@ public class DamageEvent : UnityEvent<Damageable,DamageMessage>
 
 public class Damageable : MonoBehaviour
 {
-    #region 字段j
+    #region 字段
     public int maxHp; //最大血量
     public int currentHp; //当前血量
     
@@ -28,9 +29,11 @@ public class Damageable : MonoBehaviour
     private float m_invincibleTimer = 0; //无敌时间计时器
     
     public DamageEvent onHurt;
-    public DamageEvent onDead;
+    public DamageEvent onDeath;
     public DamageEvent onReset;
     public DamageEvent onInvicibleTimeOut;
+    
+    public bool IsAlive => currentHp > 0;
     #endregion
 
 
@@ -71,7 +74,7 @@ public class Damageable : MonoBehaviour
         //死亡
         if (currentHp <= 0)
         {
-            onDead?.Invoke(this,message);
+            onDeath?.Invoke(this,message);
         }
         //受伤
         else
@@ -83,9 +86,10 @@ public class Damageable : MonoBehaviour
     public void ResetDamage()
     {
         currentHp = maxHp;
+        onReset?.Invoke(this,null);
         m_isInvinible = false;
         m_invincibleTimer = 0;
-        onReset?.Invoke(this,null);
+        
     }
     #endregion
     

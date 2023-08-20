@@ -23,6 +23,7 @@ public class PlayerController : MonoBehaviour
     public bool isGrounded = true; //默认在地面上
     public bool isCanAttack;
     public GameObject weapon;
+    public Vector3 respawnPosition;
 
     private float m_verticalSpeed;
     private PlayerInput m_playerInput;
@@ -33,6 +34,7 @@ public class PlayerController : MonoBehaviour
     private AnimatorStateInfo m_nextStateInfo;
     private int m_quickTurnLeftHash = Animator.StringToHash("Ellen_QuickTurnLeft");
     private int m_quickTurnRightHash = Animator.StringToHash("Ellen_QuickTurnRight");
+    private int m_deathHash = Animator.StringToHash("Ellen_Death");
     #endregion
 
     #region 生命周期函数
@@ -187,6 +189,44 @@ public class PlayerController : MonoBehaviour
         m_animator.SetFloat("HurtX",localDirection.x);
         m_animator.SetFloat("HurtY",localDirection.z);
         m_animator.SetTrigger("Hurt");
+    }
+
+    public void OnDeath(Damageable damageable, DamageMessage message)
+    {
+        m_animator.SetTrigger("Death");
+        StartCoroutine(Respawn());
+    }
+
+
+    //复活
+    public IEnumerator Respawn()
+    {
+        //判断是不是正在播放死亡动画
+        while (m_currentStateInfo.shortNameHash != m_deathHash)
+        {
+            yield return null;
+        }
+        yield return null;
+        //屏幕变黑
+        yield return StartCoroutine(BlackMaskView.Instance.FadeOut());
+        //玩家位置重置
+        transform.position = respawnPosition;
+        //播放对应的 重生的动画
+        yield return new WaitForSeconds(1.0f);
+        m_animator.SetTrigger("Spawn");
+        
+        
+        //屏幕变亮
+        yield return StartCoroutine(BlackMaskView.Instance.FadeIn());
+        //重置血量
+        transform.GetComponent<Damageable>().ResetDamage();
+        //获得玩家控制权
+        m_playerInput.GainControl();
+    }
+
+    public void SetRespawnPosition(Vector3 position)
+    {
+        respawnPosition = position;    
     }
     #endregion
 

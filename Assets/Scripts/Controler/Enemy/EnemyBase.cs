@@ -7,6 +7,7 @@ using UnityEngine.AI;
 [RequireComponent(typeof(NavMeshAgent))]
 [RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(Damageable))]
 public class EnemyBase : MonoBehaviour
 {
     #region 字段
@@ -22,19 +23,21 @@ public class EnemyBase : MonoBehaviour
     public float attackDistance; //攻击距离
     protected Vector3 startPosition; //开始位置
     protected RaycastHit[] results = new RaycastHit[10];
-    
+
     protected Animator animator;
     public float walkSpeed = 2;
     public float runSpeed = 4;
     protected float moveSpeed;
-    
+
     protected Rigidbody m_rigidbody;
     protected bool isCanAttack = true;
     public float attackTime; //攻击时间间隔
     protected float attackTimer; //攻击计时器
+
     #endregion
 
     #region 生命周期函数
+
     protected virtual void Start()
     {
         meshAgent = GetComponent<NavMeshAgent>();
@@ -45,6 +48,20 @@ public class EnemyBase : MonoBehaviour
 
     protected virtual void Update()
     {
+        if (target != null && target.GetComponent<PlayerInput>() != null)
+        {
+            if (target.GetComponent<PlayerInput>().IsCanControl==false&&target.GetComponent<Damageable>().IsAlive)
+            {
+                //不能对它进行攻击
+                animator.speed = 0; //防止敌人攻击动画触发后玩家失去控制的状况
+                return;
+            }
+            else
+            {
+                animator.speed = 1;
+            }
+        }
+        
         CheckTarget();
         FollowTarget();
 
@@ -116,6 +133,12 @@ public class EnemyBase : MonoBehaviour
                 continue;
             }
 
+            //判断目标是不是活着
+            if (!results[i].transform.GetComponent<Damageable>().IsAlive)
+            {
+                continue;
+            }
+
             //找到目标(找到离自己最近的目标)
             if (target != null)
             {
@@ -137,11 +160,12 @@ public class EnemyBase : MonoBehaviour
     //向目标移动的方法
     public virtual void MoveToTarget()
     {
-        if (target == null)
-            return;
-        meshAgent.SetDestination(target.transform.position);
+        if (target != null && transform.GetComponent<Damageable>().IsAlive)
+        {
+            meshAgent.SetDestination(target.transform.position);
+        }
     }
-    
+
     //转向看向目标
     public void ChangeDirection()
     {
@@ -149,7 +173,7 @@ public class EnemyBase : MonoBehaviour
         {
             Vector3 direction = target.transform.position - transform.position;
             direction.y = 0;
-           // transform.rotation = Quaternion.LookRotation(direction);
+            // transform.rotation = Quaternion.LookRotation(direction);
             transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(direction), 0.1f);
         }
     }
@@ -173,15 +197,14 @@ public class EnemyBase : MonoBehaviour
                     meshAgent.pathStatus == NavMeshPathStatus.PathInvalid)
                 {
                     //目标丢失
-                    LostTarget();
+                    LoseTarget();
                     return;
                 }
 
                 //是否在可追踪距离内
                 if (Vector3.Distance(transform.position, target.transform.position) > followDistance)
                 {
-                    //目标丢失
-                    LostTarget();
+                    LoseTarget();
                     return;
                 }
 
@@ -194,22 +217,31 @@ public class EnemyBase : MonoBehaviour
                         isCanAttack = false;
                     }
                 }
+
+                if (!target.transform.GetComponent<Damageable>().IsAlive)
+                {
+                    LoseTarget();
+                    return;
+                }
             }
-            catch (Exception e)
+            catch (System.Exception)
             {
                 //追踪出错，目标丢失
-                LostTarget();
+                LoseTarget();
             }
         }
     }
 
     //目标丢失
-    public virtual void LostTarget()
+    public virtual void LoseTarget()
     {
         target = null;
-        // 回到初始位置
-        meshAgent.SetDestination(startPosition);
-        moveSpeed = walkSpeed;
+        if (transform.GetComponent<Damageable>().IsAlive)
+        {
+            // 回到初始位置
+            meshAgent.SetDestination(startPosition);
+            moveSpeed = walkSpeed;
+        }
     }
 
     public virtual void ListenerSpeed()
@@ -226,7 +258,10 @@ public class EnemyBase : MonoBehaviour
 
     public virtual void Attack()
     {
-       
+    }
+
+    public virtual void OnDeath(Damageable damageable, DamageMessage message)
+    {
     }
 
     #endregion
