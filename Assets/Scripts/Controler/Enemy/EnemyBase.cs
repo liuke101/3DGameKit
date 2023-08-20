@@ -167,13 +167,13 @@ public class EnemyBase : MonoBehaviour
     }
 
     //转向看向目标
-    public void ChangeDirection()
+    public virtual void ChangeDirection()
     {
         if (target != null)
         {
             Vector3 direction = target.transform.position - transform.position;
             direction.y = 0;
-            // transform.rotation = Quaternion.LookRotation(direction);
+            //transform.rotation = Quaternion.LookRotation(direction);
             transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(direction), 0.1f);
         }
     }

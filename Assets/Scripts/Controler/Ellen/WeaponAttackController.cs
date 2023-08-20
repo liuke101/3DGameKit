@@ -67,7 +67,8 @@ public class WeaponAttackController : MonoBehaviour
                 {
                     if (hitPrefab != null)
                     {
-                        Instantiate(hitPrefab, checkPoint[i].point.position, Quaternion.identity);
+                        GameObject hit = Instantiate(hitPrefab, checkPoint[i].point.position, Quaternion.identity);
+                        Destroy(hit, 1.0f);
                     }
                 }
             }
@@ -96,8 +97,13 @@ public class WeaponAttackController : MonoBehaviour
 
     private void OnDrawGizmosSelected()
     {
+        if(checkPoint==null)
+            return;
+        
         for (int i = 0; i < checkPoint.Length; i++)
         {
+            if(checkPoint[i]==null)
+                continue;
             Gizmos.color = Color.blue;
             Gizmos.DrawWireSphere(checkPoint[i].point.position, checkPoint[i].radius);
         }

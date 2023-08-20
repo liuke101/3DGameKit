@@ -22,7 +22,7 @@ public class Door : MonoBehaviour
     {
         currentKeyNum++;
         
-        if (doorStatus == DoorStatus.Close&&currentKeyNum==keyNum)
+        if (doorStatus == DoorStatus.Close && currentKeyNum==keyNum)
         {
             doorStatus = DoorStatus.Open;
             onOpen?.Invoke();
