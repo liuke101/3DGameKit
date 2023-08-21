@@ -24,12 +24,12 @@ public class Chomper : EnemyBase
     }
 
 
-    public void AttackBegin()
+    public virtual void AttackBegin()
     {
         weapon.BeginAttack();
     }
 
-    public void AttackEnd()
+    public virtual void AttackEnd()
     {
         weapon.EndAttack();
     }

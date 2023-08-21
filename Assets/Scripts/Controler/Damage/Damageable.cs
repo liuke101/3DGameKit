@@ -6,10 +6,12 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Serialization;
 
+[Serializable]
 public class DamageMessage
 {
     public int damage; //伤害
     public Vector3 damagePosition; //伤害来源
+    public bool isResetPosition; //是否重置位置
 }
 
 [Serializable]
@@ -89,7 +91,6 @@ public class Damageable : MonoBehaviour
         onReset?.Invoke(this,null);
         m_isInvinible = false;
         m_invincibleTimer = 0;
-        
     }
     #endregion
     

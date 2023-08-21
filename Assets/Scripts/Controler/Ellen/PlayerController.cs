@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data.Common;
+using Unity.VisualScripting;
 using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -10,6 +11,7 @@ using Random = UnityEngine.Random;
 public class PlayerController : MonoBehaviour
 {
     #region 字段
+
     public CharacterController characterController;
     public Transform mainCamera;
 
@@ -35,6 +37,7 @@ public class PlayerController : MonoBehaviour
     private int m_quickTurnLeftHash = Animator.StringToHash("Ellen_QuickTurnLeft");
     private int m_quickTurnRightHash = Animator.StringToHash("Ellen_QuickTurnRight");
     private int m_deathHash = Animator.StringToHash("Ellen_Death");
+
     #endregion
 
     #region 生命周期函数
@@ -56,7 +59,7 @@ public class PlayerController : MonoBehaviour
         CalculateForward();
         CalculateRotation();
 
-        m_animator.SetFloat("normalizedTime", Mathf.Repeat(m_currentStateInfo.normalizedTime,1));
+        m_animator.SetFloat("normalizedTime", Mathf.Repeat(m_currentStateInfo.normalizedTime, 1));
         m_animator.ResetTrigger("Attack");
         if (m_playerInput.Attack && isCanAttack)
         {
@@ -68,9 +71,11 @@ public class PlayerController : MonoBehaviour
     {
         CalculateMove();
     }
+
     #endregion
 
     #region 方法
+
     public void CalculateMove()
     {
         if (isGrounded)
@@ -111,8 +116,8 @@ public class PlayerController : MonoBehaviour
 
             m_verticalSpeed -= gravity * Time.deltaTime;
         }
-        
-        if(!isGrounded)
+
+        if (!isGrounded)
             m_animator.SetFloat("verticalSpeed", m_verticalSpeed);
     }
 
@@ -159,7 +164,7 @@ public class PlayerController : MonoBehaviour
                         m_nextStateInfo.shortNameHash != m_quickTurnRightHash;
         return isUpdate;
     }
-    
+
     public void SetCanAttack(bool isAttack)
     {
         this.isCanAttack = isAttack;
@@ -170,25 +175,41 @@ public class PlayerController : MonoBehaviour
         CancelInvoke("HideWeaponExcute");
         weapon.SetActive(true);
     }
-    
+
     public void HideWeapon()
     {
-        Invoke("HideWeaponExcute",1); //延迟1秒隐藏武器,防止连击动画播放时武器消失
+        Invoke("HideWeaponExcute", 1); //延迟1秒隐藏武器,防止连击动画播放时武器消失
     }
+
     private void HideWeaponExcute()
     {
         weapon.SetActive(false);
     }
-    
-    public void OnHurt(Damageable damageable,DamageMessage message)
+
+    public void OnHurt(Damageable damageable, DamageMessage message)
     {
         //计算受击方向
         Vector3 direction = message.damagePosition - transform.position;
         direction.y = 0;
         Vector3 localDirection = transform.InverseTransformDirection(direction); //转换为局部坐标
-        m_animator.SetFloat("HurtX",localDirection.x);
-        m_animator.SetFloat("HurtY",localDirection.z);
-        m_animator.SetTrigger("Hurt");
+
+        //判断是不是需要重置位置
+        if (message.isResetPosition)
+        {
+            //失去控制
+            m_playerInput.ReleaseControl();
+            //播放死亡动画
+            m_animator.SetTrigger("Death");
+            //重置位置
+            StartCoroutine(ResetPosition());
+        }
+        else
+        {
+            //播放受击动画
+            m_animator.SetFloat("HurtX", localDirection.x);
+            m_animator.SetFloat("HurtY", localDirection.z);
+            m_animator.SetTrigger("Hurt");
+        }
     }
 
     public void OnDeath(Damageable damageable, DamageMessage message)
@@ -198,14 +219,15 @@ public class PlayerController : MonoBehaviour
     }
 
 
-    //复活
-    public IEnumerator Respawn()
+    //重置位置
+    public IEnumerator ResetPosition()
     {
         //判断是不是正在播放死亡动画
         while (m_currentStateInfo.shortNameHash != m_deathHash)
         {
             yield return null;
         }
+
         yield return null;
         //屏幕变黑
         yield return StartCoroutine(BlackMaskView.Instance.FadeOut());
@@ -214,23 +236,30 @@ public class PlayerController : MonoBehaviour
         //播放对应的 重生的动画
         yield return new WaitForSeconds(1.0f);
         m_animator.SetTrigger("Spawn");
-        
-        
+
         //屏幕变亮
         yield return StartCoroutine(BlackMaskView.Instance.FadeIn());
-        //重置血量
-        transform.GetComponent<Damageable>().ResetDamage();
         //获得玩家控制权
         m_playerInput.GainControl();
     }
 
+    //复活(需要重置血量)
+    public IEnumerator Respawn()
+    {
+        yield return StartCoroutine(ResetPosition());
+        //重置血量
+        transform.GetComponent<Damageable>().ResetDamage();
+    }
+
     public void SetRespawnPosition(Vector3 position)
     {
-        respawnPosition = position;    
+        respawnPosition = position;
     }
+
     #endregion
 
     #region 动画事件
+
     public void OnIdleStart()
     {
         m_animator.SetInteger("RadomIdle", -1);
@@ -240,15 +269,16 @@ public class PlayerController : MonoBehaviour
     {
         m_animator.SetInteger("RadomIdle", Random.Range(0, 3));
     }
-    
+
     public void MeleeAttackStart()
     {
         weapon.GetComponent<WeaponAttackController>().BeginAttack();
     }
-    
+
     public void MeleeAttackEnd()
     {
         weapon.GetComponent<WeaponAttackController>().EndAttack();
     }
+
     #endregion
 }

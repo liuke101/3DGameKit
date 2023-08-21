@@ -27,7 +27,7 @@ public class SceneChange : MonoBehaviour
             {
                 if (loadView)
                 {
-                    loadView.Hide();
+                    loadView.Close();
                 }
             }
         );

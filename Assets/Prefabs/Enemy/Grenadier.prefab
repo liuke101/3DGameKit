@@ -75,8 +75,9 @@ GameObject:
   - component: {fileID: 247150854540994596}
   - component: {fileID: 7732249797568937986}
   - component: {fileID: 8947013078587012432}
-  - component: {fileID: 456458078925470657}
   - component: {fileID: 8788197495944108286}
+  - component: {fileID: 456458078925470657}
+  - component: {fileID: 2662308826388870535}
   m_Layer: 23
   m_Name: Grenadier
   m_TagString: Untagged
@@ -101,7 +102,7 @@ Transform:
   - {fileID: 4736631467827180242}
   - {fileID: 1265148483762221630}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 87.763, z: 0}
 --- !u!95 &247150854540994596
 Animator:
@@ -182,6 +183,57 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &8788197495944108286
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 697541587049742277}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1712460a9e0a25b40a5d4ffd97559103, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHp: 20
+  currentHp: 20
+  invincibleTime: 0
+  onHurt:
+    m_PersistentCalls:
+      m_Calls: []
+  onDeath:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: Door, Assembly-CSharp
+        m_MethodName: Open
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 7732249797568937986}
+        m_TargetAssemblyTypeName: Grenadier, Assembly-CSharp
+        m_MethodName: OnDeath
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onReset:
+    m_PersistentCalls:
+      m_Calls: []
+  onInvicibleTimeOut:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!54 &456458078925470657
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -209,33 +261,27 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &8788197495944108286
-MonoBehaviour:
+--- !u!65 &2662308826388870535
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 697541587049742277}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
   m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1712460a9e0a25b40a5d4ffd97559103, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHp: 20
-  currentHp: 20
-  invincibleTime: 0
-  onHurt:
-    m_PersistentCalls:
-      m_Calls: []
-  onDeath:
-    m_PersistentCalls:
-      m_Calls: []
-  onReset:
-    m_PersistentCalls:
-      m_Calls: []
-  onInvicibleTimeOut:
-    m_PersistentCalls:
-      m_Calls: []
+  serializedVersion: 3
+  m_Size: {x: 1.5649519, y: 5.237051, z: 2.4419723}
+  m_Center: {x: -0.11610687, y: 2.1185255, z: -0.0049136872}
 --- !u!1 &930810696565238891
 GameObject:
   m_ObjectHideFlags: 0
@@ -1445,7 +1491,7 @@ Transform:
   m_GameObject: {fileID: 7904823392945043366}
   m_LocalRotation: {x: -0.0000049578684, y: -0.00000037659927, z: 0.00000033324878,
     w: 1}
-  m_LocalPosition: {x: -0.3874504, y: 0.00000054646125, z: -0.00000002065975}
+  m_LocalPosition: {x: -0.267, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1470,9 +1516,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   checkPoint:
   - point: {fileID: 4411861127613847374}
-    radius: 0.24
+    radius: 0.42
   - point: {fileID: 1846501267739254275}
-    radius: 0.37
+    radius: 0.54
   layerMask:
     serializedVersion: 2
     m_Bits: 512

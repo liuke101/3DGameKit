@@ -106,9 +106,7 @@ public class Grenadier : EnemyBase
         bullet.transform.localPosition = Vector3.zero;
         m_bullet = bullet.GetComponent<Bullet>();
     }
-    #endregion
     
-    #region 动画事件
     public void Shoot()
     {
         if(target!=null)
@@ -121,11 +119,21 @@ public class Grenadier : EnemyBase
         }
         m_bullet = null;
     }
+
+    public override void OnDeath(Damageable damageable, DamageMessage message)
+    {
+        base.OnDeath(damageable, message);
+        animator.SetTrigger("Death");
+        Destroy(gameObject,20.0f);
+    }
+
+    #endregion
+    
+    #region 动画事件
  
     public void MeleeAttackStart()
     {
         meleeAttackController.BeginAttack();
-       
     }
     
     public void MeleeAttackEnd()
