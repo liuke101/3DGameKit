@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Gamekit3D;
 using UnityEngine;
+using UnityEngine.Events;
 
 [Serializable]
 public class CheckPoint
@@ -23,6 +24,9 @@ public class WeaponAttackController : MonoBehaviour
     public GameObject mySelf;
     private List<GameObject> m_attackList = new List<GameObject>();
     public GameObject hitPrefab;
+
+
+    public UnityEvent onAttack;
     #endregion
 
 
@@ -91,6 +95,7 @@ public class WeaponAttackController : MonoBehaviour
         message.damage = damage;
         message.damagePosition = mySelf.transform.position;
         damageable.OnDamage(message);
+        onAttack?.Invoke();
         m_attackList.Add(obj);
         return true;
     }

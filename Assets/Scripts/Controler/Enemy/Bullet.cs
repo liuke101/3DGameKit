@@ -7,16 +7,16 @@ using UnityEngine.Serialization;
 public class Bullet : MonoBehaviour
 {
     public float time;//子弹飞行时间
-    private Rigidbody m_rigidbody;
+    protected Rigidbody m_rigidbody;
     public GameObject explosionEffect;
 
-    private void Awake()
+    protected virtual void Awake()
     {
         m_rigidbody = GetComponent<Rigidbody>();
     }
 
     
-    public void Shoot(Vector3 target,Vector3 direction)
+    public virtual void Shoot(Vector3 target,Vector3 direction)
     {
         transform.SetParent(null); //解除父子关系,防止刚体受到父物体的影响
         m_rigidbody.isKinematic = false;
@@ -28,16 +28,15 @@ public class Bullet : MonoBehaviour
         Invoke("Attack",time);
     }
 
-    public void Attack()
+    public virtual void Attack()
     {
         //爆炸
         Explosion();
         //对人物进行攻击
         transform.GetComponent<WeaponAttackController>().BeginAttack();
-        
     }
 
-    public void Explosion()
+    public virtual void Explosion()
     {
         if(explosionEffect!=null)
         {

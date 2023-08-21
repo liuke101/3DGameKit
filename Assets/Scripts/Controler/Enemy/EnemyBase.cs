@@ -33,6 +33,7 @@ public class EnemyBase : MonoBehaviour
     protected bool isCanAttack = true;
     public float attackTime; //攻击时间间隔
     protected float attackTimer; //攻击计时器
+    protected Damageable damageable;
 
     #endregion
 
@@ -44,10 +45,17 @@ public class EnemyBase : MonoBehaviour
         startPosition = transform.position;
         animator = GetComponent<Animator>();
         m_rigidbody = GetComponent<Rigidbody>();
+        damageable = GetComponent<Damageable>();
     }
 
     protected virtual void Update()
     {
+        //判断自己是不是活着
+        if(damageable.IsAlive==false)
+        {
+            return;
+        }
+        
         if (target != null && target.GetComponent<PlayerInput>() != null)
         {
             if (target.GetComponent<PlayerInput>().IsCanControl==false&&target.GetComponent<Damageable>().IsAlive)

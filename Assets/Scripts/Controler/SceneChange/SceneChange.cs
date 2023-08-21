@@ -15,7 +15,7 @@ public class SceneChange : MonoBehaviour
         }
 
         SceneController.Instance.LoadScene(
-            1,
+            sceneIndex,
             (progress) =>
             {
                 if (loadView)

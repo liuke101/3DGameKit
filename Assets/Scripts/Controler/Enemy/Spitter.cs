@@ -5,11 +5,13 @@ using Unity.Collections;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
+using Quaternion = UnityEngine.Quaternion;
 using Vector3 = UnityEngine.Vector3;
 
 public class Spitter : Chomper
 {
     public float escapeDistance; //逃跑距离
+    public GameObject bulletPrefab;
 
     public void Escape()
     {
@@ -25,9 +27,6 @@ public class Spitter : Chomper
     {
         //监听速度
         ListenerSpeed();
-
-        
-      
         
         if (target != null)
         {
@@ -109,7 +108,12 @@ public class Spitter : Chomper
     
     public override void AttackBegin()
     {
-        
+        //创建一个子弹
+        GameObject bullet = Instantiate(bulletPrefab, transform.Find("ShootPoint").transform.position, Quaternion.identity);
+        if (bullet != null)
+        {
+            bullet.GetComponent<SpitterBullet>().Shoot(target.transform.position, transform.forward);
+        }
     }
 
     public override void AttackEnd()

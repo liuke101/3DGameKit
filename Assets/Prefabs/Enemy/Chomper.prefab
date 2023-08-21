@@ -977,6 +977,9 @@ MonoBehaviour:
   damage: 1
   mySelf: {fileID: 5069000059865901727}
   hitPrefab: {fileID: 0}
+  onAttack:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &3004427786067530591
 GameObject:
   m_ObjectHideFlags: 0
@@ -2002,7 +2005,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 512
   maxHeihtDiff: 2
-  lookAngle: 60
+  lookAngle: 180
   target: {fileID: 0}
   followDistance: 15
   attackDistance: 2.5

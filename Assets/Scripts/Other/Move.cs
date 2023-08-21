@@ -24,9 +24,9 @@ public class Move : MonoBehaviour
     public Vector3 endPosition;
 
     public float time = 1; //移动的时间
-    private float m_timer; //移动的计时器
-    private float m_percent; //移动的百分比
-    private bool m_isMoving; //是否正在移动
+    protected float timer; //移动的计时器
+    protected float percent; //移动的百分比
+    protected bool isMoving; //是否正在移动
     
     public MoveType moveType = MoveType.Once;
     public UnityEvent onMoveEnd;
@@ -35,9 +35,9 @@ public class Move : MonoBehaviour
     public bool moveOnAwake = false;
     
     public float delayTime = 0;
-    private float m_delayTimer = 0;
+    protected float delayTimer = 0;
 
-    private void Awake()
+    protected void Awake()
     {
         if (moveOnAwake)
         {
@@ -45,9 +45,9 @@ public class Move : MonoBehaviour
         }
     }
 
-    void Update()
+    protected void Update()
     {
-        if (m_isMoving)
+        if (isMoving)
         {
             CalculateMove();
         }
@@ -55,53 +55,53 @@ public class Move : MonoBehaviour
 
     public void StartMove()
     {
-        m_isMoving = true;    
-        m_timer = 0;
+        isMoving = true;    
+        timer = 0;
     }
     
-    private void CalculateMove()
+    protected void CalculateMove()
     {
-        if(m_delayTimer<delayTime)
+        if(delayTimer<delayTime)
         {
-            m_delayTimer += Time.deltaTime;
+            delayTimer += Time.deltaTime;
             return;
         }
         
-        m_timer += Time.deltaTime/time;
+        timer += Time.deltaTime/time;
         
         switch (moveType)
         {
             case MoveType.Once:
-                m_percent = Mathf.Clamp01(m_timer);
+                percent = Mathf.Clamp01(timer);
                 break;
             case MoveType.Loop:
-                m_percent = Mathf.Repeat(m_timer,1);
+                percent = Mathf.Repeat(timer,1);
                 break;
             case MoveType.PingPong:
-                m_percent = Mathf.PingPong(m_timer,1);
+                percent = Mathf.PingPong(timer,1);
                 break;
         }
 
         MoveExcute();
 
-        if (m_timer >= 1 && moveType == MoveType.Once)
+        if (timer >= 1 && moveType == MoveType.Once)
         {
-            m_isMoving = false;
-            m_timer = 0;
+            isMoving = false;
+            timer = 0;
             //移动结束了
             onMoveEnd?.Invoke();
         }
     }
 
-    private void MoveExcute()
+    protected virtual void MoveExcute()
     {
         switch (positionType)
         {
             case PositionType.World:
-                transform.position = Vector3.Lerp(startPosition,endPosition,m_percent);
+                transform.position = Vector3.Lerp(startPosition,endPosition,percent);
                 break;
             case PositionType.Local:
-                transform.localPosition = Vector3.Lerp(startPosition,endPosition,m_percent);
+                transform.localPosition = Vector3.Lerp(startPosition,endPosition,percent);
                 break;
         }
     }
