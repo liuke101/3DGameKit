@@ -90,26 +90,26 @@ public class EnemyBase : MonoBehaviour
     }
 
     //绘制视野范围
-    protected virtual void OnDrawGizmosSelected()
-    {
-        //画出检测范围
-        Gizmos.color = new Color(Color.red.r, Color.red.g, Color.red.b, 1.0f);
-        Gizmos.DrawWireSphere(transform.position, checkDistance);
-        //最大高度差
-        Gizmos.DrawLine(transform.position, transform.position + Vector3.up * maxHeihtDiff);
-        Gizmos.DrawLine(transform.position, transform.position - Vector3.up * maxHeihtDiff);
-
-        //画出追踪范围
-        Gizmos.color = new Color(Color.blue.r, Color.blue.g, Color.blue.b, 1.0f);
-        Gizmos.DrawWireSphere(transform.position, followDistance);
-        //画出攻击范围
-        Gizmos.color = new Color(Color.green.r, Color.green.g, Color.green.b, 1.0f);
-        Gizmos.DrawWireSphere(transform.position, attackDistance);
-        //画出视野范围
-        UnityEditor.Handles.color = new Color(Color.red.r, Color.red.g, Color.red.b, 0.2f);
-        UnityEditor.Handles.DrawSolidArc(transform.position, Vector3.up, transform.forward, lookAngle, checkDistance);
-        UnityEditor.Handles.DrawSolidArc(transform.position, -Vector3.up, transform.forward, lookAngle, checkDistance);
-    }
+    // protected virtual void OnDrawGizmosSelected()
+    // {
+    //     //画出检测范围
+    //     Gizmos.color = new Color(Color.red.r, Color.red.g, Color.red.b, 1.0f);
+    //     Gizmos.DrawWireSphere(transform.position, checkDistance);
+    //     //最大高度差
+    //     Gizmos.DrawLine(transform.position, transform.position + Vector3.up * maxHeihtDiff);
+    //     Gizmos.DrawLine(transform.position, transform.position - Vector3.up * maxHeihtDiff);
+    //
+    //     //画出追踪范围
+    //     Gizmos.color = new Color(Color.blue.r, Color.blue.g, Color.blue.b, 1.0f);
+    //     Gizmos.DrawWireSphere(transform.position, followDistance);
+    //     //画出攻击范围
+    //     Gizmos.color = new Color(Color.green.r, Color.green.g, Color.green.b, 1.0f);
+    //     Gizmos.DrawWireSphere(transform.position, attackDistance);
+    //     //画出视野范围
+    //     UnityEditor.Handles.color = new Color(Color.red.r, Color.red.g, Color.red.b, 0.2f);
+    //     UnityEditor.Handles.DrawSolidArc(transform.position, Vector3.up, transform.forward, lookAngle, checkDistance);
+    //     UnityEditor.Handles.DrawSolidArc(transform.position, -Vector3.up, transform.forward, lookAngle, checkDistance);
+    // }
 
     #endregion
 

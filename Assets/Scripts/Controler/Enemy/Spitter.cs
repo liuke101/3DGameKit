@@ -121,10 +121,10 @@ public class Spitter : Chomper
         
     }
 
-    protected override void OnDrawGizmosSelected()
-    {
-        base.OnDrawGizmosSelected();
-        Handles.color = new Color(Color.cyan.r,Color.cyan.g,Color.cyan.b, 0.1f);
-        Handles.DrawSolidArc(transform.position, Vector3.up, transform.forward, 360, escapeDistance);
-    }
+    // protected override void OnDrawGizmosSelected()
+    // {
+    //     base.OnDrawGizmosSelected();
+    //     Handles.color = new Color(Color.cyan.r,Color.cyan.g,Color.cyan.b, 0.1f);
+    //     Handles.DrawSolidArc(transform.position, Vector3.up, transform.forward, 360, escapeDistance);
+    // }
 }
